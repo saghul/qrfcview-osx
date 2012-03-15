@@ -28,6 +28,3 @@ QT += network
 RESOURCES += rfcview.qrc
 FORMS += setdirectory_dlg.ui find_dlg.ui
 
-win32 {
-    RC_FILE = src.rc
-}
