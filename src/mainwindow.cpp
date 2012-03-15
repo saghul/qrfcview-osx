@@ -462,17 +462,15 @@ void MainWindow::createMenus()
 
 void MainWindow::createToolBars()
 {
-    fileToolBar = addToolBar(tr("File"));
+    fileToolBar = addToolBar(tr("ToolBar"));
     fileToolBar->addAction(openAct);
     fileToolBar->addAction(loadAct);
     fileToolBar->addAction(closeAct);
     fileToolBar->addAction(printAct);
-
-    editToolBar = addToolBar(tr("Edit"));
-    editToolBar->addAction(copyAct);
-    editToolBar->addAction(findAct);
-    editToolBar->addAction(backwardAct);
-    editToolBar->addAction(forwardAct);
+    fileToolBar->addAction(copyAct);
+    fileToolBar->addAction(findAct);
+    fileToolBar->addAction(backwardAct);
+    fileToolBar->addAction(forwardAct);
 }
 
 void MainWindow::createStatusBar()
