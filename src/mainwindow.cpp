@@ -270,7 +270,7 @@ void MainWindow::print()
 void MainWindow::about()
 {
     QMessageBox::about(this, tr("About qRFCView"),
-            tr("<b>qRFCView v0.62</b><br> A smart RFC Viewer using the Qt4 library.<br><br> Mitsubishi Electric, 2005"));
+            tr("<b>qRFCView</b><br> A smart RFC Viewer using the Qt4 library.<br><br> Mitsubishi Electric, 2005"));
 }
 
 void MainWindow::updateMenus()
