@@ -25,6 +25,8 @@
 #include <QPrinter>
 #include <QLibrary>
 
+#include <limits>
+
 #include "rfcloader.h"
 #include "mainwindow.h"
 #include "mdichild.h"
@@ -122,8 +124,8 @@ void MainWindow::getrfc()
 {
   // Load a RFC number
   bool bOK;
-  int iRFCNum = QInputDialog::getInteger(this, tr("Please enter a RFC number"),
-                                             tr("RFC#:"), 0, 1, 5000, 1, &bOK);
+  int iRFCNum = QInputDialog::getInt(this, tr("Please enter a RFC number"),
+                                             tr("RFC#:"), 0, 1, std::numeric_limits<int>::max(), 1, &bOK);
   if (bOK)
     RFCLoad( iRFCNum );
 }
