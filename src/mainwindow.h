@@ -82,6 +82,7 @@ private:
     MdiChild *activeMdiChild();
     MdiChild *findMdiChild(const QString &fileName);
 
+    QWidget *centralWidget;
     QTabWidget *m_qTabWidget;
     QSignalMapper *windowMapper;
 

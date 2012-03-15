@@ -40,9 +40,15 @@ MainWindow::MainWindow():m_qLastOpenDir(".")
     /* OSX style */
     setUnifiedTitleAndToolBarOnMac(true);
 
-    m_qTabWidget = new QTabWidget(this);
+    centralWidget = new QWidget(this);
+    setCentralWidget(centralWidget);
 
-    setCentralWidget(m_qTabWidget);
+    QHBoxLayout *layout = new QHBoxLayout;
+    centralWidget->setLayout(layout);
+    centralWidget->hide();
+
+    m_qTabWidget = new QTabWidget();
+    layout->addWidget(m_qTabWidget);
 
     connect(m_qTabWidget, SIGNAL(currentChanged(int)),
             this, SLOT(updateMenus()));
@@ -103,6 +109,7 @@ void MainWindow::open()
         child->setCurrentFont(m_qFont);
         if (child->loadFile(fileName)) {
             statusBar()->showMessage(tr("File loaded"), 2000);
+            centralWidget->show();
             child->show();
             m_qLastOpenDir=qFileInfo.dir();
         } else {
@@ -120,6 +127,10 @@ void MainWindow::close()
     m_qTabWidget->removeTab(m_qTabWidget->currentIndex());
     delete pMdiChild;
   }
+
+  if (m_qTabWidget->count() == 0)
+      centralWidget->hide();
+
   updateMenus();
 }
 
@@ -587,6 +598,7 @@ void MainWindow::RFCReady(const QString &qFilename)
   MdiChild *child = createMdiChild(qFileInfo.fileName());
   child->setCurrentFont(m_qFont);
   if (child->loadFile(qFilename)) {
+      centralWidget->show();
       child->show();
   } else {
       child->close();
