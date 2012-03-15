@@ -37,6 +37,9 @@
 
 MainWindow::MainWindow():m_qLastOpenDir(".")
 {
+    /* OSX style */
+    setUnifiedTitleAndToolBarOnMac(true);
+
     m_qTabWidget = new QTabWidget(this);
 
     setCentralWidget(m_qTabWidget);
