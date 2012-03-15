@@ -1,0 +1,33 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!DOCTYPE KDevPrjSession>
+<KDevPrjSession>
+ <DocsAndViews NumberOfDocuments="1" >
+  <Doc0 NumberOfViews="1" URL="file:/home/u1/Romain/src/rfcview/src/cdialogfind.cpp" >
+   <View0 line="10" Type="Source" />
+  </Doc0>
+ </DocsAndViews>
+ <pluginList>
+  <kdevdebugger>
+   <breakpointList>
+    <breakpoint0 location="/home/u1/Romain/src/rfcview/src/mainwindow.cpp:324" type="1" condition="" enabled="1" />
+    <breakpoint1 location="/home/u1/Romain/src/rfcview/src/mainwindow.cpp:149" type="1" condition="" enabled="1" />
+   </breakpointList>
+  </kdevdebugger>
+  <kdevbookmarks>
+   <bookmarks/>
+  </kdevbookmarks>
+  <kdevrbdebugger>
+   <breakpointList>
+    <breakpoint0 location="/home/u1/Romain/src/rfcview/src/mainwindow.cpp:324" type="1" enabled="1" />
+    <breakpoint1 location="/home/u1/Romain/src/rfcview/src/mainwindow.cpp:149" type="1" enabled="1" />
+   </breakpointList>
+   <watchExpressions/>
+  </kdevrbdebugger>
+  <kdevvalgrind>
+   <executable path="" params="" />
+   <valgrind path="" params="" />
+   <calltree path="" params="" />
+   <kcachegrind path="" />
+  </kdevvalgrind>
+ </pluginList>
+</KDevPrjSession>

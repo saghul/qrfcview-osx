@@ -1,0 +1,19 @@
+NSIS installer
+(made from similar doc by Christophe Gisquet)
+
+1) Getting NSIS from http://nsis.sourceforge.net/ and install it
+2) Make some folder inside qrfcview folder, like nsis-installer/.
+3) Copy qrfcview.nsi to this folder
+4) From your build of qRFCView and installation of Qt4, copy those files/folders,
+   keeping the paths, to nssis-installer/:
+
+  bin\mingwm10.dll
+  bin\QtCore4.dll
+  bin\QtDesignerComponents4.dll
+  bin\QtGui4.dll
+  bin\QtNetwork4.dll
+  bin\qRFCView.exe
+
+5) Double-click on the .nsi file and the installer will automatically be built.
+
+======
