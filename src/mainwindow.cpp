@@ -589,7 +589,7 @@ void MainWindow::RFCStart(const QString &qFilename)
 { // Start downloading a RFC file
   //statusBar()->showMessage(tr("Downloading ")+qFilename);
   statusBar()->clearMessage();
-  statusBar()->addWidget(m_pProgressBar);
+  statusBar()->addWidget(m_pProgressBar, true);
   m_pProgressBar->show();
 }
 
