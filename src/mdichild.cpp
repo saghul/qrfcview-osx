@@ -113,11 +113,6 @@ QString MdiChild::strippedName(const QString &fullFileName)
     return QFileInfo(fullFileName).fileName();
 }
 
-void MdiChild::copy()
-{
-  m_pTextEdit->copy();
-}
-
 bool MdiChild::hasSelection()
 {
   return m_pTextEdit->textCursor().hasSelection();

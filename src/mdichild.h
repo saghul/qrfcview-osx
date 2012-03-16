@@ -48,7 +48,6 @@
         bool loadFile(const QString &fileName);
         QString userFriendlyCurrentFile();
         QString currentFile() { return curFile; }
-        void copy();
         bool hasSelection();
         void setCurrentFont(const QFont &);
         bool FindText(QString &qTextToFind, uint32_t iOptionFlags);

@@ -144,12 +144,6 @@ void MainWindow::getrfc()
     RFCLoad( iRFCNum );
 }
 
-
-void MainWindow::copy()
-{
-    activeMdiChild()->copy();
-}
-
 void MainWindow::findOpen()
 {
     m_pDialogFind->show();
@@ -286,9 +280,6 @@ void MainWindow::updateMenus()
     previousAct->setEnabled(hasMdiChild);
     separatorAct->setVisible(hasMdiChild);
 */
-    bool hasSelection = (activeMdiChild() &&
-                          activeMdiChild()->hasSelection());
-    copyAct->setEnabled(hasSelection);
     findAct->setEnabled( activeMdiChild()!=NULL);
     printAct->setEnabled( activeMdiChild()!=NULL);
     findnextAct->setEnabled( activeMdiChild()!=NULL && (!m_pDialogFind->GetTextToFind().isEmpty()) );
@@ -339,8 +330,6 @@ MdiChild *MainWindow::createMdiChild(const QString &qTitle)
     MdiChild *child = new MdiChild();
     m_qTabWidget->addTab(child, qTitle);
 
-    connect(child, SIGNAL(copyAvailable(bool)),
-            copyAct, SLOT(setEnabled(bool)));
     connect(child->m_pTextEdit, SIGNAL(RFCReq( uint32_t )), this, SLOT(RFCLoad( uint32_t  )) );
     connect(child->m_pTextEdit, SIGNAL(forwardAvailable(bool)), forwardAct, SLOT(setEnabled(bool)) );
     connect(child->m_pTextEdit, SIGNAL(backwardAvailable(bool)), backwardAct, SLOT(setEnabled(bool)) );
@@ -374,12 +363,6 @@ void MainWindow::createActions()
     exitAct->setShortcut(tr("Ctrl+Q"));
     exitAct->setStatusTip(tr("Exit the application"));
     connect(exitAct, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
-
-    copyAct = new QAction(QIcon(":/images/copy.png"), tr("&Copy"), this);
-    copyAct->setShortcut(tr("Ctrl+C"));
-    copyAct->setStatusTip(tr("Copy the current selection's contents to the "
-                              "clipboard"));
-    connect(copyAct, SIGNAL(triggered()), this, SLOT(copy()));
 
     setFontAct = new QAction(QIcon(), tr("&Set Font..."), this);
     connect(setFontAct, SIGNAL(triggered()), this, SLOT(setFont()));
@@ -456,7 +439,6 @@ void MainWindow::createMenus()
     editMenu = menuBar()->addMenu(tr("&Edit"));
     editMenu->addAction(backwardAct);
     editMenu->addAction(forwardAct);
-    editMenu->addAction(copyAct);
     editMenu->addAction(findAct);
     editMenu->addAction(findprevAct);
     editMenu->addAction(findnextAct);
@@ -482,7 +464,6 @@ void MainWindow::createToolBars()
     fileToolBar->addAction(loadAct);
     fileToolBar->addAction(closeAct);
     fileToolBar->addAction(printAct);
-    fileToolBar->addAction(copyAct);
     fileToolBar->addAction(findAct);
     fileToolBar->addAction(backwardAct);
     fileToolBar->addAction(forwardAct);

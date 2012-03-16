@@ -54,7 +54,6 @@ private slots:
     void open();    
     void close();
     void getrfc();
-    void copy();
     void findOpen();
     void findnext();
     void findprev();
