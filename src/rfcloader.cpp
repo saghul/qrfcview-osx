@@ -65,7 +65,7 @@ void QRFCLoader::SetDirectories(QStringList &qDirList, uint8_t iDefaultDir)
   
   if ( m_qDirList.count()==0 )
   {
-    m_qDirList=QStringList(QString("."));
+    m_qDirList=QStringList(QDir::homePath());
     iDefaultDir=0;
   }
 

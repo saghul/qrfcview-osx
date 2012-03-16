@@ -24,6 +24,7 @@
 #include <QHttp>
 #include <QPrinter>
 #include <QLibrary>
+#include <QDir>
 
 #include <limits>
 
@@ -35,7 +36,7 @@
 #include "qrfceditor.h"
 #include "cprintdialog.h"
 
-MainWindow::MainWindow():m_qLastOpenDir(".")
+MainWindow::MainWindow():m_qLastOpenDir(QDir::homePath())
 {
     /* OSX style */
     setUnifiedTitleAndToolBarOnMac(true);
@@ -490,7 +491,7 @@ void MainWindow::readSettings()
     m_qFont.setPointSize(settings.value("Font_size",   m_qFont.pointSize()).toInt() );
     m_qFont.setWeight(settings.value("Font_weight", m_qFont.weight()).toInt());
     m_qFont.setItalic(settings.value("Font_italic", m_qFont.italic()).toBool());
-    m_qDirectoryList=settings.value("Directories", QStringList(QString(".") )).toStringList();
+    m_qDirectoryList=settings.value("Directories", QStringList(QDir::homePath() )).toStringList();
     m_iDefaultDirectory=settings.value("DefaultDirectory", 0).toInt();
     m_qRFCURL=settings.value("RFC_URL", QString("http://www.ietf.org/rfc/") ).toString();
 
@@ -501,7 +502,7 @@ void MainWindow::readSettings()
         m_qDirectoryList.removeAt(i);
     if (m_qDirectoryList.count()==0)
     {
-      m_qDirectoryList=QStringList(QString("."));
+      m_qDirectoryList=QStringList(QDir::homePath());
       m_iDefaultDirectory=0;
     }
     // Check DefaultDirectory index
