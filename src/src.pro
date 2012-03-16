@@ -24,7 +24,8 @@ SOURCES += rfcview.cpp \
            cprintdialog.cpp
 TARGET=../bin/qRFCView
 CONFIG += qt release
-QT += network 
+QT += network
 RESOURCES += rfcview.qrc
 FORMS += setdirectory_dlg.ui find_dlg.ui
+ICON = ../images/rfcview.icns
 
