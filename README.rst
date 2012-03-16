@@ -11,7 +11,8 @@ qRFCView is a viewer for IETF RFC documents. Features:
 - Searching
 
 This project is a fork of the original qRFCView (version 0.62) with some changes,
-mainly cosmetic, so that it looks nice on OSX.
+mainly cosmetic, so that it looks nice on OSX. Original project is located here:
+http://qrfcview.berlios.de/
 
 
 Original look on OSX
