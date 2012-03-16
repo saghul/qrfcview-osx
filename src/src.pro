@@ -28,4 +28,7 @@ QT += network
 RESOURCES += rfcview.qrc
 FORMS += setdirectory_dlg.ui find_dlg.ui
 ICON = ../images/rfcview.icns
-
+QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.6
+QMAKE_CFLAGS_RELEASE = -pipe -mmacosx-version-min=10.6 -O2 -arch x86_64 -Xarch_x86_64 -Wall -W $(DEFINES)
+QMAKE_CXXFLAGS_RELEASE = -pipe -mmacosx-version-min=10.6 -O2 -arch x86_64 -Xarch_x86_64 -Wall -W $(DEFINES)
+QMAKE_LFLAGS_RELEASE = -headerpad_max_install_names -mmacosx-version-min=10.6 -arch x86_64 -Xarch_x86_64
