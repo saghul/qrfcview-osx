@@ -486,7 +486,7 @@ void MainWindow::readSettings()
     int i;
     QSettings settings("MELCO", "qRFCView");
     QPoint pos = settings.value("pos", QPoint(200, 200)).toPoint();
-    QSize size = settings.value("size", QSize(400, 400)).toSize();
+    QSize size = settings.value("size", QSize(640, 480)).toSize();
     m_qFont.setFamily(settings.value("Font_family", m_qFont.family()).toString() );
     m_qFont.setPointSize(settings.value("Font_size",   m_qFont.pointSize()).toInt() );
     m_qFont.setWeight(settings.value("Font_weight", m_qFont.weight()).toInt());
