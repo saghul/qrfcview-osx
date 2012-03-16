@@ -477,6 +477,7 @@ void MainWindow::createMenus()
 void MainWindow::createToolBars()
 {
     fileToolBar = addToolBar(tr("ToolBar"));
+    fileToolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     fileToolBar->addAction(openAct);
     fileToolBar->addAction(loadAct);
     fileToolBar->addAction(closeAct);
