@@ -41,18 +41,15 @@ MainWindow::MainWindow():m_qLastOpenDir(QDir::homePath())
     /* OSX style */
     setUnifiedTitleAndToolBarOnMac(true);
 
-    centralWidget = new QWidget(this);
-    setCentralWidget(centralWidget);
-
-    QHBoxLayout *layout = new QHBoxLayout;
-    centralWidget->setLayout(layout);
-    centralWidget->hide();
-
     m_qTabWidget = new QTabWidget();
-    layout->addWidget(m_qTabWidget);
+    m_qTabWidget->setDocumentMode(true);
+    m_qTabWidget->setTabsClosable(true);
 
-    connect(m_qTabWidget, SIGNAL(currentChanged(int)),
-            this, SLOT(updateMenus()));
+    setCentralWidget(m_qTabWidget);
+
+    connect(m_qTabWidget, SIGNAL(currentChanged(int)), this, SLOT(updateMenus()));
+    connect(m_qTabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(close_tab(int)));
+
             /*
     windowMapper = new QSignalMapper(this);
     connect(windowMapper, SIGNAL(mapped(QWidget *)),
@@ -65,6 +62,13 @@ MainWindow::MainWindow():m_qLastOpenDir(QDir::homePath())
     connect(m_pRFCLoader, SIGNAL(start(QString)),this, SLOT(RFCStart(QString)));
     m_pRFCLoader->SetDownloadURL(qURL);
     m_pRFCLoader->SetDirectories(m_qDirectoryList, m_iDefaultDirectory);
+
+    open_dialog = new QFileDialog(this, Qt::Sheet);
+    open_dialog->setDirectory(m_qLastOpenDir.absolutePath());
+    open_dialog->setFileMode(QFileDialog::ExistingFile);
+    open_dialog->setNameFilter("RFC documents (*.txt)");
+    open_dialog->setWindowModality(Qt::WindowModal);
+    connect(open_dialog, SIGNAL(finished(int)), this, SLOT(open_dialog_finished(int)));
 
     createActions();
     createMenus();
@@ -93,44 +97,47 @@ void MainWindow::closeEvent(QCloseEvent *event)
     event->accept();
 }
 
-
-void MainWindow::open()
+void MainWindow::open_dialog_finished(int result)
 {
-    QString fileName = QFileDialog::getOpenFileName(this, QString(), m_qLastOpenDir.absolutePath() );
+    if (result != QDialog::Accepted)
+        return;
+
+    QString fileName = fileName = open_dialog->selectedFiles().value(0);
     QFileInfo qFileInfo(fileName);
 
-    if (!fileName.isEmpty()) {
-        MdiChild *existing = findMdiChild(fileName);
-        if (existing) {
-            m_qTabWidget->setCurrentWidget(existing);
-            return;
-        }
+    if (fileName.isEmpty())
+        return;
 
-        MdiChild *child = createMdiChild(qFileInfo.fileName());
-        child->setCurrentFont(m_qFont);
-        if (child->loadFile(fileName)) {
-            statusBar()->showMessage(tr("File loaded"), 2000);
-            centralWidget->show();
-            child->show();
-            m_qLastOpenDir=qFileInfo.dir();
-        } else {
-            child->close();
-        }
+    MdiChild *existing = findMdiChild(fileName);
+    if (existing) {
+        m_qTabWidget->setCurrentWidget(existing);
+        return;
     }
+
+    MdiChild *child = createMdiChild(qFileInfo.fileName());
+    child->setCurrentFont(m_qFont);
+    if (child->loadFile(fileName)) {
+        statusBar()->showMessage(tr("File loaded"), 2000);
+        child->show();
+        child->m_pTextEdit->setFocus();
+        m_qLastOpenDir=qFileInfo.dir();
+    } else {
+        child->close();
+    }
+
+    this->activateWindow();
+    this->raise();
+
 }
 
-void MainWindow::close()
+void MainWindow::close_tab(int index)
 {
-  MdiChild *pMdiChild=activeMdiChild();
-
+  MdiChild *pMdiChild = qobject_cast<MdiChild *>(m_qTabWidget->widget(index));
   if (pMdiChild)
   {
-    m_qTabWidget->removeTab(m_qTabWidget->currentIndex());
+    m_qTabWidget->removeTab(index);
     delete pMdiChild;
   }
-
-  if (m_qTabWidget->count() == 0)
-      centralWidget->hide();
 
   updateMenus();
 }
@@ -287,7 +294,6 @@ void MainWindow::updateMenus()
     findprevAct->setEnabled( activeMdiChild()!=NULL && (!m_pDialogFind->GetTextToFind().isEmpty()) );
     forwardAct->setEnabled( activeMdiChild()!=NULL && activeMdiChild()->m_pTextEdit->isForwardAvailable() );
     backwardAct->setEnabled( activeMdiChild()!=NULL && activeMdiChild()->m_pTextEdit->isBackwardAvailable() );
-    closeAct->setEnabled(activeMdiChild()!=NULL);
 }
 
 void MainWindow::updateWindowMenu()
@@ -343,22 +349,15 @@ void MainWindow::createActions()
     openAct = new QAction(QIcon(":/images/open.png"), tr("&Open..."), this);
     openAct->setShortcut(tr("Ctrl+O"));
     openAct->setStatusTip(tr("Open an existing file"));
-    connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
+    connect(openAct, SIGNAL(triggered()), open_dialog, SLOT(open()));
 
     loadAct = new QAction(QIcon(":/images/load.png"), tr("&Load RFC..."), this);
     loadAct->setShortcut(tr("Ctrl+L"));
     loadAct->setStatusTip(tr("Load a RFC from its number"));
     connect(loadAct, SIGNAL(triggered()), this, SLOT(getrfc()));
 
-    closeAct = new QAction(QIcon(":/images/close.png"),tr("Cl&ose"), this);
-    closeAct->setShortcut(tr("Ctrl+F4"));
-    closeAct->setStatusTip(tr("Close the active window"));
-    connect(closeAct, SIGNAL(triggered()), this, SLOT(close()));
-
-
     printAct = new QAction(QIcon(":/images/print.png"), tr("&Print..."), this);
     connect(printAct, SIGNAL(triggered()), this, SLOT(print()));
-
 
     exitAct = new QAction(tr("E&xit"), this);
     exitAct->setShortcut(tr("Ctrl+Q"));
@@ -432,7 +431,6 @@ void MainWindow::createMenus()
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(openAct);
     fileMenu->addAction(loadAct);
-    fileMenu->addAction(closeAct);
     fileMenu->addAction(printAct);
     fileMenu->addSeparator();
     fileMenu->addAction(exitAct);
@@ -463,7 +461,6 @@ void MainWindow::createToolBars()
     fileToolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     fileToolBar->addAction(openAct);
     fileToolBar->addAction(loadAct);
-    fileToolBar->addAction(closeAct);
     fileToolBar->addAction(printAct);
     fileToolBar->addAction(findAct);
     fileToolBar->addAction(backwardAct);
@@ -581,7 +578,6 @@ void MainWindow::RFCReady(const QString &qFilename)
   MdiChild *child = createMdiChild(qFileInfo.fileName());
   child->setCurrentFont(m_qFont);
   if (child->loadFile(qFilename)) {
-      centralWidget->show();
       child->show();
   } else {
       child->close();

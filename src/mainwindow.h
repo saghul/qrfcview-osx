@@ -34,6 +34,7 @@ class QRFCLoader;
 class QProgressBar;
 class CDialogFind;
 class QTabWidget;
+class QFileDialog;
 
 class MainWindow : public QMainWindow
 {
@@ -51,8 +52,6 @@ public slots:
     void RFCReady(const QString &qFileName);
     
 private slots:
-    void open();    
-    void close();
     void getrfc();
     void findOpen();
     void findnext();
@@ -62,6 +61,8 @@ private slots:
     void setDirectories();
     void updateMenus();
     void updateWindowMenu();
+    void open_dialog_finished(int result);
+    void close_tab(int index);
     MdiChild *createMdiChild(const QString &qTitle);
     
     void RFCStart(const QString &qFilename);
@@ -81,8 +82,8 @@ private:
     MdiChild *activeMdiChild();
     MdiChild *findMdiChild(const QString &fileName);
 
-    QWidget *centralWidget;
     QTabWidget *m_qTabWidget;
+    QFileDialog *open_dialog;
     QSignalMapper *windowMapper;
 
     QMenu *fileMenu;
