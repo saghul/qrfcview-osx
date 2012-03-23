@@ -25,6 +25,7 @@
 #include <QPrinter>
 #include <QLibrary>
 #include <QDir>
+#include <QDesktopServices>
 
 #include <limits>
 
@@ -36,7 +37,7 @@
 #include "qrfceditor.h"
 #include "cprintdialog.h"
 
-MainWindow::MainWindow():m_qLastOpenDir(QDir::homePath())
+MainWindow::MainWindow()
 {
     /* OSX style */
     setUnifiedTitleAndToolBarOnMac(true);
@@ -56,15 +57,14 @@ MainWindow::MainWindow():m_qLastOpenDir(QDir::homePath())
             workspace, SLOT(setActiveWindow(QWidget *)));
             */
     readSettings();
-    QUrl qURL(m_qRFCURL);
-    m_pRFCLoader=new QRFCLoader(this);
+
+    m_pRFCLoader = new QRFCLoader(this);
     connect(m_pRFCLoader, SIGNAL(done(QString)),this, SLOT(RFCReady(QString)));
     connect(m_pRFCLoader, SIGNAL(start(QString)),this, SLOT(RFCStart(QString)));
-    m_pRFCLoader->SetDownloadURL(qURL);
-    m_pRFCLoader->SetDirectories(m_qDirectoryList, m_iDefaultDirectory);
 
     open_dialog = new QFileDialog(this, Qt::Sheet);
-    open_dialog->setDirectory(m_qLastOpenDir.absolutePath());
+    //open_dialog->setDirectory(QDesktopServices::storageLocation(QDesktopServices::DataLocation) + "qRFCView");
+    open_dialog->setDirectory(m_pRFCLoader->GetDir());
     open_dialog->setFileMode(QFileDialog::ExistingFile);
     open_dialog->setNameFilter("RFC documents (*.txt)");
     open_dialog->setWindowModality(Qt::WindowModal);
@@ -120,7 +120,6 @@ void MainWindow::open_dialog_finished(int result)
         statusBar()->showMessage(tr("File loaded"), 2000);
         child->show();
         child->m_pTextEdit->setFocus();
-        m_qLastOpenDir=qFileInfo.dir();
     } else {
         child->close();
     }
@@ -213,21 +212,6 @@ void MainWindow::backward()
   MdiChild *pMdiChild=activeMdiChild();
   if (pMdiChild)
     pMdiChild->m_pTextEdit->backward();
-}
-
-void MainWindow::setDirectories()
-{
-    CDialogSetDirectory *pDialog=new CDialogSetDirectory(&m_qDirectoryList, m_iDefaultDirectory, m_qRFCURL, this);
-    if (pDialog->exec()==QDialog::Accepted)
-    {
-      m_iDefaultDirectory=pDialog->GetDirectoryList(&m_qDirectoryList);
-      m_qRFCURL=pDialog->GetRFCURL();
-      QUrl qURL(m_qRFCURL);
-      m_pRFCLoader->SetDownloadURL(qURL);
-      m_pRFCLoader->SetDirectories(m_qDirectoryList, m_iDefaultDirectory);
-    }
-    delete pDialog;
-
 }
 
 void MainWindow::setFont()
@@ -366,8 +350,6 @@ void MainWindow::createActions()
 
     setFontAct = new QAction(QIcon(), tr("&Set Font..."), this);
     connect(setFontAct, SIGNAL(triggered()), this, SLOT(setFont()));
-    setDirectoriesAct = new QAction(QIcon(), tr("&Set Directories..."), this);
-    connect(setDirectoriesAct, SIGNAL(triggered()), this, SLOT(setDirectories()));
 
     forwardAct = new QAction(QIcon(":/images/forward.png"), tr("&Forward"), this);
     connect(forwardAct, SIGNAL(triggered()), this, SLOT(forward()));
@@ -443,7 +425,6 @@ void MainWindow::createMenus()
     editMenu->addAction(findnextAct);
     editMenu->addSeparator();
     editMenu->addAction(setFontAct);
-    editMenu->addAction(setDirectoriesAct);
 
     //windowMenu = menuBar()->addMenu(tr("&Window"));
     //connect(windowMenu, SIGNAL(aboutToShow()), this, SLOT(updateWindowMenu()));
@@ -480,7 +461,6 @@ void MainWindow::createStatusBar()
 
 void MainWindow::readSettings()
 {
-    int i;
     QSettings settings("MELCO", "qRFCView");
     QPoint pos = settings.value("pos", QPoint(200, 200)).toPoint();
     QSize size = settings.value("size", QSize(640, 480)).toSize();
@@ -488,26 +468,9 @@ void MainWindow::readSettings()
     m_qFont.setPointSize(settings.value("Font_size",   m_qFont.pointSize()).toInt() );
     m_qFont.setWeight(settings.value("Font_weight", m_qFont.weight()).toInt());
     m_qFont.setItalic(settings.value("Font_italic", m_qFont.italic()).toBool());
-    m_qDirectoryList=settings.value("Directories", QStringList(QDir::homePath() )).toStringList();
-    m_iDefaultDirectory=settings.value("DefaultDirectory", 0).toInt();
-    m_qRFCURL=settings.value("RFC_URL", QString("http://www.ietf.org/rfc/") ).toString();
 
     move(pos);
     resize(size);
-    for (i=0;i<m_qDirectoryList.count();i++)
-      if (m_qDirectoryList[i].isEmpty())
-        m_qDirectoryList.removeAt(i);
-    if (m_qDirectoryList.count()==0)
-    {
-      m_qDirectoryList=QStringList(QDir::homePath());
-      m_iDefaultDirectory=0;
-    }
-    // Check DefaultDirectory index
-    if (m_iDefaultDirectory>=m_qDirectoryList.size() )
-      m_iDefaultDirectory=0;
-    //qDebug() << m_qDirectoryList.count();
-    m_qLastOpenDir=QDir( settings.value("LastOpenedDirectory", m_qDirectoryList[m_iDefaultDirectory]).toString() );
-    //m_qLastOpenDir=QDir(m_qDirectoryList[m_iDefaultDirectory]);
 }
 
 void MainWindow::writeSettings()
@@ -519,10 +482,6 @@ void MainWindow::writeSettings()
     settings.setValue("Font_size",   m_qFont.pointSize());
     settings.setValue("Font_weight", m_qFont.weight());
     settings.setValue("Font_italic", m_qFont.italic());
-    settings.setValue("Directories", m_qDirectoryList);
-    settings.setValue("DefaultDirectory", m_iDefaultDirectory);
-    settings.setValue("RFC_URL", m_qRFCURL );
-    settings.setValue("LastOpenedDirectory", m_qLastOpenDir.absolutePath() );
 }
 
 MdiChild *MainWindow::activeMdiChild()

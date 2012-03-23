@@ -42,7 +42,6 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow();
-    void SetCurrentDir(QDir qCurrentDir) {m_qLastOpenDir=qCurrentDir;}
     
 protected:
     void closeEvent(QCloseEvent *event);   
@@ -58,7 +57,6 @@ private slots:
     void findprev();
     void about();
     void setFont();
-    void setDirectories();
     void updateMenus();
     void updateWindowMenu();
     void open_dialog_finished(int result);
@@ -95,7 +93,7 @@ private:
     QAction *openAct, *printAct, *closeAct, *loadAct;
     QAction *exitAct;
     QAction *copyAct;    
-    QAction *setFontAct, *setDirectoriesAct;
+    QAction *setFontAct;
     /*
     QAction *closeAct;
     QAction *closeAllAct;
@@ -112,10 +110,8 @@ private:
     QFont m_qFont; // Font used for text display
     QStringList m_qDirectoryList;
     uint8_t m_iDefaultDirectory;
-    QString m_qRFCURL;
     QRFCLoader *m_pRFCLoader;
     CDialogFind *m_pDialogFind;
-    QDir m_qLastOpenDir;
 };
 
 #endif

@@ -31,14 +31,5 @@ int main(int argc, char *argv[])
      app.setWindowIcon(QIcon(":/images/rfcview.png"));   
      MainWindow mainWin;
      mainWin.show();
-     if (argc>1)
-     {
-       if (QFile::exists(argv[1]))
-       {
-         mainWin.RFCReady(argv[1]);
-         QFileInfo qFileInfo(argv[1]);
-         mainWin.SetCurrentDir(qFileInfo.dir());
-       }
-     }
      return app.exec();
 }

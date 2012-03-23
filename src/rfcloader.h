@@ -49,6 +49,7 @@ public:
     void SetDirectories(QStringList &qDirList, uint8_t iDefaultDir);
     void GetFile(uint32_t iRFCNum);
     QHttp *GetQHttp() {return m_qHttp;}
+    QString GetDir() {return m_qDir;}
     void SetDownloadURL(QUrl &qURL);
     
 signals:
@@ -61,8 +62,7 @@ private slots:
     void receivedHeader(const QHttpResponseHeader &qResponseHdr);
     
 private:
-    QStringList m_qDirList;
-    uint8_t m_iDefaultDir;    
+    QString m_qDir;
     QString m_qIETFSite, m_qIETFPath;
     int m_iCurrentRequestID;
     

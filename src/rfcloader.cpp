@@ -25,6 +25,7 @@
 #include <QMessageBox>
 #include <QtDebug>
 #include <QDir>
+#include <QDesktopServices>
 
 QRFCLoader::QRFCLoader(QObject *parent)
  : QObject(parent)
@@ -33,9 +34,11 @@ QRFCLoader::QRFCLoader(QObject *parent)
   connect(m_qHttp, SIGNAL( requestStarted(int) ), this, SLOT( startDownload(int) ) );
   connect(m_qHttp, SIGNAL( requestFinished(int, bool) ), this, SLOT( fileDownload(int, bool) ) );
   connect(m_qHttp, SIGNAL( responseHeaderReceived(QHttpResponseHeader) ), this, SLOT( receivedHeader(QHttpResponseHeader) ) );
-  //m_qDirList.append(".");
-  m_iDefaultDir=0;
-  m_qIETFSite="www.ietf.org";
+  m_qDir = QDesktopServices::storageLocation(QDesktopServices::DataLocation) + "/qRFCView";
+  QDir dir = QDir(m_qDir);
+  dir.mkpath(m_qDir);
+  QUrl url = QUrl(QString("http://www.ietf.org/rfc/"));
+  SetDownloadURL(url);
   m_iCurrentRequestID=-1;
 }
 
@@ -45,33 +48,6 @@ QRFCLoader::~QRFCLoader()
   delete m_qHttp;
 }
 
-void QRFCLoader::SetDirectories(QStringList &qDirList, uint8_t iDefaultDir) 
-{
-  int i;
-  QDir qDirectory;
-  
-  m_qDirList.clear();
-  for (i=0;i<qDirList.count();i++)
-  {
-    if (qDirList[i].isEmpty() )
-      continue;
-    qDirectory=QDir(qDirList[i]);
-    if (qDirectory.exists())
-      m_qDirList.append(qDirList[i]);
-    if (i==iDefaultDir)
-      m_iDefaultDir=m_qDirList.count() - 1;
-    qDebug() << qDirList[i];  
-  }
-  
-  if ( m_qDirList.count()==0 )
-  {
-    m_qDirList=QStringList(QDir::homePath());
-    iDefaultDir=0;
-  }
-
-  //m_iDefaultDir=iDefaultDir;
-}   
-
 void QRFCLoader::SetDownloadURL(QUrl &qURL)
 {  
   m_qIETFSite=qURL.host();
@@ -80,25 +56,19 @@ void QRFCLoader::SetDownloadURL(QUrl &qURL)
 
 void QRFCLoader::GetFile(uint32_t iRFCNum)
 {
-  uint8_t i;
   QString qFilename;
   int iRequestID;
   
-  for (i=0;i<m_qDirList.count();i++)
+  qFilename = m_qDir + "/rfc" + QString::number(iRFCNum) +".txt";
+  if ( QFile::exists( qFilename ) )
   {
-    qFilename=m_qDirList.at(i)+ "/rfc" + QString::number(iRFCNum) +".txt";
-    if ( QFile::exists( qFilename ) )
-    {
-      emit done(qFilename);
-      return;
-    }    
-  }
+    emit done(qFilename);
+    return;
+  }    
   
   // RFC is not yet loaded
   // Open a file in the default dir.      
   RFCDesc_t sRFCDesc;
-  qFilename=m_qDirList.at(m_iDefaultDir) + "/rfc" + QString::number(iRFCNum) +".txt";
-  qDebug() << qFilename;
   sRFCDesc.pFile = new QFile(qFilename);
   sRFCDesc.iRFCNum=iRFCNum;
   
@@ -147,7 +117,7 @@ void QRFCLoader::receivedHeader(const QHttpResponseHeader &qResponseHdr)
   else
   {
     sRFCDesc=m_RequestList.value(m_iCurrentRequestID);
-    qFilename=m_qDirList.at(m_iDefaultDir) + "/rfc" + QString::number(sRFCDesc.iRFCNum) +".txt";
+    qFilename = m_qDir + "/rfc" + QString::number(sRFCDesc.iRFCNum) +".txt";
     emit start( qFilename );  
   }
 }
@@ -162,7 +132,7 @@ void QRFCLoader::fileDownload(int iRequestID, bool bError)
     sRFCDesc=m_RequestList.value(iRequestID);
     if (m_iCurrentRequestID==iRequestID)
     {      
-      qFilename=m_qDirList.at(m_iDefaultDir) + "/rfc" + QString::number(sRFCDesc.iRFCNum) +".txt";
+      qFilename = m_qDir + "/rfc" + QString::number(sRFCDesc.iRFCNum) +".txt";
       sRFCDesc.pFile->close();
       delete sRFCDesc.pFile;
       
