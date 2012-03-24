@@ -534,8 +534,8 @@ void MainWindow::RFCReady(const QString &qFilename)
 {
   QFileInfo qFileInfo(qFilename);
   MdiChild *child = createMdiChild(qFileInfo.fileName());
-  child->setCurrentFont(m_qFont);
   if (child->loadFile(qFilename)) {
+      child->setCurrentFont(m_qFont);
       child->show();
   } else {
       child->close();
