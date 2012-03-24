@@ -115,8 +115,8 @@ void MainWindow::open_dialog_finished(int result)
     }
 
     MdiChild *child = createMdiChild(qFileInfo.fileName());
-    child->setCurrentFont(m_qFont);
     if (child->loadFile(fileName)) {
+        child->setCurrentFont(m_qFont);
         statusBar()->showMessage(tr("File loaded"), 2000);
         child->show();
     } else {
