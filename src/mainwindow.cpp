@@ -119,7 +119,6 @@ void MainWindow::open_dialog_finished(int result)
     if (child->loadFile(fileName)) {
         statusBar()->showMessage(tr("File loaded"), 2000);
         child->show();
-        child->m_pTextEdit->setFocus();
     } else {
         child->close();
     }
