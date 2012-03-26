@@ -45,6 +45,7 @@ MainWindow::MainWindow()
     m_qTabWidget = new QTabWidget();
     m_qTabWidget->setDocumentMode(true);
     m_qTabWidget->setTabsClosable(true);
+    m_qTabWidget->setMovable(true);
 
     setCentralWidget(m_qTabWidget);
 
