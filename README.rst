@@ -41,7 +41,7 @@ Check here: https://github.com/saghul/qrfcview-osx/downloads
 
 Building
 --------
-Install the Qt SDK from here: http://qt-project.org/downloads
+Install the Qt SDK (tested with version 4.8.3) from here: http://qt-project.org/downloads
 
 Execute the build script:
 
