@@ -27,7 +27,7 @@ New look on OSX
 
 Other changes
 -------------
-- Added application icon (bor bundle)
+- Added application icon (for bundle)
 - Added script for building a DMG easily
 - Removed limit on RFC number
 - Removed 'copy' button
@@ -41,16 +41,13 @@ Check here: https://github.com/saghul/qrfcview-osx/downloads
 
 Building
 --------
-Install the Qt SDK from here: http://qt.nokia.com/downloads/sdk-mac-os-cpp
-
-Once installed set your PATH environment variable accordingly;
-
-    export PATH=~/QtSDK/Desktop/Qt/4.8.0/gcc/bin:$PATH
+Install the Qt SDK from here: http://qt-project.org/downloads
 
 Execute the build script:
+
+::
 
     ./build.sh
 
 The resulting app bundle and DMG will be in bin/
-
 
