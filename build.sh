@@ -5,9 +5,8 @@ if [[ -f Makefile ]]; then
     make distclean
 fi
 
-rm -f Makefile srv/Makefile
 rm -rf bin/*
-qmake
+qmake -spec macx-g++
 make
 pushd bin
 macdeployqt qRFCView.app -dmg
