@@ -76,14 +76,15 @@ Qt::ItemFlags CTitleModel::flags(const QModelIndex &index) const
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
-QVariant CTitleModel::headerData(int section, Qt::Orientation orientation,
-                                int role) const
-{
-    if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
-        return QString("Title");
 
+QVariant CTitleModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    Q_UNUSED(section);
+    Q_UNUSED(orientation);
+    Q_UNUSED(role);
     return QVariant();
 }
+
 
 QModelIndex CTitleModel::index(int row, int column, const QModelIndex &parent)
             const

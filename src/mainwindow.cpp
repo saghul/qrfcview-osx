@@ -525,6 +525,7 @@ void MainWindow::RFCLoad( uint32_t iRFCNum )
 
 void MainWindow::RFCStart(const QString &qFilename)
 { // Start downloading a RFC file
+  Q_UNUSED(qFilename);
   //statusBar()->showMessage(tr("Downloading ")+qFilename);
   statusBar()->clearMessage();
   statusBar()->addWidget(m_pProgressBar, true);

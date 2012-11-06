@@ -23,6 +23,8 @@
 CDialogFind::CDialogFind(QWidget *parent, QStringList *pPrevResearch, uint32_t iOptionFlags)
  : QDialog(parent)
 {
+  Q_UNUSED(pPrevResearch);
+  Q_UNUSED(iOptionFlags);
   m_ui.setupUi(this);
   connect(m_ui.findButton, SIGNAL(pressed()), this, SLOT(find() ) );
 }
